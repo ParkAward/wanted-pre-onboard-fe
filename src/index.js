@@ -1,13 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import reportWebVitals from "./reportWebVitals";
+import GlobalStyle from "./styles/Globalstyles";
+import { ThemeProvider } from "styled-components";
+import theme from "./styles/theme";
+import Pages from "./pages";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <GlobalStyle />
+    <ThemeProvider theme={theme}>
+      <Pages />
+    </ThemeProvider>
   </React.StrictMode>
 );
 
