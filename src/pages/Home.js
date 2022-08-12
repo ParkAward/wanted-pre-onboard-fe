@@ -19,12 +19,12 @@ const Home = () => {
   );
 
   useEffect(() => {
-    if (localStorage.getItem("token")) navigate("/todo");
+    if (typeof localStorage.getItem("token") === "string") navigate("/todo");
   }, []);
   return (
-    <main role={"main"}>
-      <Center>
-        <Container
+    <Main role={"main"}>
+      <Container>
+        <form
           onSubmit={async (e) => {
             e.preventDefault();
             console.log(email, password);
@@ -63,7 +63,9 @@ const Home = () => {
             }
           }}
         >
-          <Text>{type ? "로그인" : "회원가입"}</Text>
+          <header>
+            <Text>{type ? "로그인" : "회원가입"}</Text>
+          </header>
           <Input
             width={"18rem"}
             name="email"
@@ -78,19 +80,19 @@ const Home = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <Button disabled={disable}>{type ? "로그인" : "가입하기"}</Button>
-        </Container>
-        <Trigger onClick={() => setType((f) => !f)} readonly>
-          {type ? "가입하기" : "로그인"}
-        </Trigger>
-      </Center>
-    </main>
+        </form>
+      </Container>
+      <Trigger onClick={() => setType((f) => !f)} readonly>
+        {type ? "가입하기" : "로그인"}
+      </Trigger>
+    </Main>
   );
 };
 const Text = styled.h3`
   margin: 1rem;
   font-weight: 600;
 `;
-const Center = styled.article`
+const Main = styled.main`
   width: 100vw;
   height: 100vh;
 
@@ -100,14 +102,17 @@ const Center = styled.article`
 
   justify-content: center;
 `;
-const Container = styled.form`
+const Container = styled.article`
   padding: 6rem 3rem;
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  align-items: center;
   border-radius: 0.2rem;
   border: grey 1px solid;
+
+  & > form {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 const Trigger = styled.button`
   border: 0px;

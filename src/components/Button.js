@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const Button = ({ children, disabled = true, ...props }) => {
+const Button = ({ children, disabled = false, ...props }) => {
   return (
     <StyledButton disabled={disabled} {...props}>
       {children}
@@ -12,14 +12,15 @@ const StyledButton = styled.button`
   width: ${(props) => props.width ?? "150px"};
   height: ${(props) => props.height ?? "30px"};
   max-width: 100%;
+  box-sizing: border-box;
   color: rgb(253, 249, 243);
   font-weight: 600;
-  background: #f03d4e;
+  background: ${(props) => props.background ?? props.theme.red.primary};
   border: none;
   border-radius: 3px;
   outline: 0;
   cursor: pointer;
-  margin-top: 0.6rem;
+  margin-top: ${(props) => props.marginTop ?? " 0.6rem"};
   box-shadow: 0 1px 3px #00000033, 0 1px 2px #00000033;
   transition: all 0.3s ease-out;
 
@@ -32,7 +33,7 @@ const StyledButton = styled.button`
     animation: all 0.2s ease-out forwards;
   }
   :disabled {
-    background: rgb(140, 0, 10);
+    background: ${({ theme }) => theme.red.dark};
   }
 `;
 export default Button;

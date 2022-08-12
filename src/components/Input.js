@@ -11,7 +11,7 @@ const StyledInput = styled.input`
   padding: ${(props) => props.padding || "11px 13px"};
   max-width: 100%;
   background: #f9f9fa;
-  color: #f03d4e;
+  color: ${({ theme }) => theme.red.primary};
   margin-bottom: 0.9rem;
   border-radius: 4px;
   outline: 0;
