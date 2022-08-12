@@ -1,8 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
-const Button = ({ children, ...props }) => {
-  return <StyledButton {...props}>{children}</StyledButton>;
+const Button = ({ children, disabled = true, ...props }) => {
+  return (
+    <StyledButton disabled={disabled} {...props}>
+      {children}
+    </StyledButton>
+  );
 };
 const StyledButton = styled.button`
   width: ${(props) => props.width ?? "150px"};
@@ -26,6 +30,9 @@ const StyledButton = styled.button`
   :hover {
     background: rgb(200, 50, 70);
     animation: all 0.2s ease-out forwards;
+  }
+  :disabled {
+    background: rgb(140, 0, 10);
   }
 `;
 export default Button;

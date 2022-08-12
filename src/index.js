@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import ReactDOM from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
 import GlobalStyle from "./styles/Globalstyles";
@@ -6,6 +7,9 @@ import { ThemeProvider } from "styled-components";
 import theme from "./styles/theme";
 import Pages from "./pages";
 
+axios.defaults.baseURL =
+  "https://5co7shqbsf.execute-api.ap-northeast-2.amazonaws.com/production";
+axios.defaults.headers.post["Content-Type"] = "application/json";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
