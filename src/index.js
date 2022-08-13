@@ -10,6 +10,9 @@ import Pages from "./pages";
 axios.defaults.baseURL =
   "https://5co7shqbsf.execute-api.ap-northeast-2.amazonaws.com/production";
 axios.defaults.headers.post["Content-Type"] = "application/json";
+axios.defaults.headers.put["Content-Type"] = "application/json";
+axios.defaults.headers.delete["Content-Type"] = "application/json";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>

@@ -21,48 +21,42 @@ const Home = () => {
   useEffect(() => {
     if (typeof localStorage.getItem("token") === "string") navigate("/todo");
   }, []);
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    if (type) {
+      try {
+        const result = await axios.post("/auth/signin", {
+          email,
+          password,
+        });
+        if (result.data) {
+          const { access_token } = result.data;
+          localStorage.setItem("token", access_token);
+          navigate("/todo");
+        }
+      } catch (e) {
+        alert(e.request.response);
+      }
+    } else {
+      try {
+        const result = await axios.post("/auth/signup", {
+          email,
+          password,
+        });
+        if (result.data) {
+          const { access_token } = result.data;
+          localStorage.setItem("token", access_token);
+          navigate("/todo");
+        }
+      } catch (e) {
+        alert(e.request.response);
+      }
+    }
+  };
   return (
     <Main role={"main"}>
       <Container>
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            console.log(email, password);
-            if (type) {
-              try {
-                const result = await axios.post("/auth/signin", {
-                  email,
-                  password,
-                });
-                if (result.data) {
-                  const { access_token } = result.data;
-                  localStorage.setItem("token", access_token);
-                  navigate("/todo");
-                }
-              } catch (e) {
-                console.log(e.request.response);
-              }
-            } else {
-              try {
-                const result = await axios.post(
-                  "/auth/signup",
-                  {
-                    email,
-                    password,
-                  },
-                  { headers: { "Content-Type": "application/json" } }
-                );
-                if (result.data) {
-                  const { access_token } = result.data;
-                  localStorage.setItem("token", access_token);
-                  navigate("/todo");
-                }
-              } catch (e) {
-                alert(e.request.response);
-              }
-            }
-          }}
-        >
+        <form onSubmit={handleLoginSubmit}>
           <header>
             <Text>{type ? "로그인" : "회원가입"}</Text>
           </header>

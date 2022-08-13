@@ -1,140 +1,28 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components";
-import Button from "../components/Button";
-import Input from "../components/Input";
 import theme from "../styles/theme";
-
-import { MdDelete, MdDone, MdCancel } from "react-icons/md";
-import { FaPencilAlt } from "react-icons/fa";
-
-const mockData = [
-  {
-    id: 1,
-    todo: "todo2",
-    isCompleted: true,
-    userId: 1,
-  },
-  {
-    id: 2,
-    todo: "todo3",
-    isCompleted: false,
-    userId: 1,
-  },
-];
-const TodoItem = ({ data }) => {
-  const [edit, setEdit] = useState(false);
-  const itemRef = useRef();
-  useEffect(() => {
-    if (data.isCompleted && itemRef.current) {
-      itemRef.current.classList.add("done");
-    }
-    if (edit) {
-      setTodo(data.todo);
-    }
-  }, [edit]);
-  const [todo, setTodo] = useState("");
-  return (
-    <TodoItemContainer>
-      <TodoLabelContainer action="POST">
-        {edit ? (
-          <Input
-            width={"20rem"}
-            name={todo}
-            value={todo}
-            onChange={(e) => setTodo(e.target.value)}
-          />
-        ) : (
-          <TodoItemLabel ref={itemRef}>{data.todo}</TodoItemLabel>
-        )}
-      </TodoLabelContainer>
-      <TodoItemEventBox>
-        {edit ? (
-          <>
-            <button>
-              <MdDone size={25} />
-            </button>
-            <button onClick={() => setEdit(false)}>
-              <MdCancel size={25} />
-            </button>
-          </>
-        ) : (
-          <>
-            <button onClick={() => setEdit(true)}>
-              <FaPencilAlt size={20} />
-            </button>
-            <button>
-              <MdDone size={25} />
-            </button>
-            <button>
-              <MdDelete size={25} />
-            </button>
-          </>
-        )}
-      </TodoItemEventBox>
-    </TodoItemContainer>
-  );
-};
-const TodoItemContainer = styled.div`
-  width: 100%;
-  height: 4rem;
-  background: ${({ theme }) => theme.red.light}55;
-  margin-top: 0.3rem;
-  padding: 0 1.5rem;
-  display: flex;
-  align-items: center;
-`;
-const TodoLabelContainer = styled.form`
-  display: flex;
-  align-items: center;
-  & > input {
-    position: relative;
-    left: -4%;
-    margin-top: 12px;
-    font-size: 25px;
-    align-self: flex-end;
-  }
-`;
-const TodoItemLabel = styled.p`
-  font-weight: 500;
-  font-size: 26px;
-  position: relative;
-
-  &.done {
-    opacity: 0.6;
-    &:before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: -0.5rem;
-      display: block;
-      width: 0%;
-      height: 1px;
-      background: #fff;
-      animation: strikeitem 0.5s ease-out 0s forwards;
-    }
-  }
-`;
-const TodoItemEventBox = styled.div`
-  display: flex;
-  margin-left: auto;
-  button {
-    display: block;
-    border: 0px;
-    background: none;
-    color: #fff;
-    padding: 0.3rem;
-    :hover {
-      color: ${({ theme }) => theme.red.light};
-    }
-  }
-`;
+import TodoItem from "../container/todo/TodoItem";
+import AddTodoBox from "../container/todo/AddTodoBox";
 
 const Todo = () => {
   const navigate = useNavigate();
+  const [todoList, setTodoList] = useState([]);
+  const [execution, execute] = useState(false);
   useEffect(() => {
     if (typeof localStorage.getItem("token") === "object") navigate("/");
-  }, []);
+    else {
+      execute(false);
+      const token = localStorage.getItem("token");
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      axios
+        .get("/todos", {})
+        .then((res) => setTodoList(res.data))
+        .catch(alert);
+    }
+  }, [execution, navigate]);
   return (
     <Main role="main">
       <Container>
@@ -153,22 +41,11 @@ const Todo = () => {
         </Header>
         <Contents>
           <TodoList>
-            {mockData.map((data) => (
-              <TodoItem key={data.id} data={data} />
+            {todoList.map((data) => (
+              <TodoItem key={data.id} data={data} execute={execute} />
             ))}
           </TodoList>
-          <InputText>Add Todo</InputText>
-          <InputBox>
-            <Input width={"80%"} height={"2.7rem"} />
-            <Button
-              width={"20%"}
-              height={"2.7rem"}
-              marginTop="0px"
-              background={theme.red.light}
-            >
-              추가
-            </Button>
-          </InputBox>
+          <AddTodoBox execute={execute} theme={theme} />
         </Contents>
       </Container>
     </Main>
@@ -193,20 +70,9 @@ const Contents = styled.div`
 
   flex-flow: column;
 `;
-const InputText = styled.p`
-  padding: 3rem 0 0.3rem 3rem;
-`;
-const InputBox = styled.div`
-  padding: 0 3rem 3rem 3rem;
 
-  display: flex;
-  flex-flow: row;
-  self-item: center;
-`;
 const Main = styled.main`
-  width: 100vw;
-  height: 100vh;
-
+  padding: 10rem 0;
   display: flex;
   flex-flow: column;
   align-items: center;
@@ -216,8 +82,9 @@ const Main = styled.main`
 `;
 
 const Container = styled.article`
-  width: 25%;
+  width: 30%;
   background: #f1505f;
+  min-width: 475px;
 
   box-shadow: -1.4rem -1.4rem ${({ theme }) => theme.red.light};
 `;
