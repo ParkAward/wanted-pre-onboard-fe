@@ -16,7 +16,7 @@ const StyledInput = styled.input`
   border-radius: 4px;
   outline: 0;
   border: 1px solid rgba(245, 245, 245, 0.7);
-  font-size: 14px;
+  font-size: ${(props) => props.fontSize ?? "14px"};
   transition: all 0.3s ease-out;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.1);
   :focus,

@@ -1,12 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import theme from "../styles/theme";
 
-import { MdDone } from "react-icons/md";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdDone, MdCancel } from "react-icons/md";
 import { FaPencilAlt } from "react-icons/fa";
 
 const mockData = [
@@ -24,25 +23,54 @@ const mockData = [
   },
 ];
 const TodoItem = ({ data }) => {
+  const [edit, setEdit] = useState(false);
   const itemRef = useRef();
   useEffect(() => {
-    if (data.isCompleted) {
+    if (data.isCompleted && itemRef.current) {
       itemRef.current.classList.add("done");
     }
-  }, []);
+    if (edit) {
+      setTodo(data.todo);
+    }
+  }, [edit]);
+  const [todo, setTodo] = useState("");
   return (
     <TodoItemContainer>
-      <TodoItemLabel ref={itemRef}>{data.todo}</TodoItemLabel>
+      <TodoLabelContainer action="POST">
+        {edit ? (
+          <Input
+            width={"20rem"}
+            name={todo}
+            value={todo}
+            onChange={(e) => setTodo(e.target.value)}
+          />
+        ) : (
+          <TodoItemLabel ref={itemRef}>{data.todo}</TodoItemLabel>
+        )}
+      </TodoLabelContainer>
       <TodoItemEventBox>
-        <button>
-          <FaPencilAlt size={20} />
-        </button>
-        <button>
-          <MdDone size={25} />
-        </button>
-        <button>
-          <MdDelete size={25} />
-        </button>
+        {edit ? (
+          <>
+            <button>
+              <MdDone size={25} />
+            </button>
+            <button onClick={() => setEdit(false)}>
+              <MdCancel size={25} />
+            </button>
+          </>
+        ) : (
+          <>
+            <button onClick={() => setEdit(true)}>
+              <FaPencilAlt size={20} />
+            </button>
+            <button>
+              <MdDone size={25} />
+            </button>
+            <button>
+              <MdDelete size={25} />
+            </button>
+          </>
+        )}
       </TodoItemEventBox>
     </TodoItemContainer>
   );
@@ -52,14 +80,26 @@ const TodoItemContainer = styled.div`
   height: 4rem;
   background: ${({ theme }) => theme.red.light}55;
   margin-top: 0.3rem;
-  padding: 1rem 1.5rem;
+  padding: 0 1.5rem;
   display: flex;
   align-items: center;
 `;
+const TodoLabelContainer = styled.form`
+  display: flex;
+  align-items: center;
+  & > input {
+    position: relative;
+    left: -4%;
+    margin-top: 12px;
+    font-size: 25px;
+    align-self: flex-end;
+  }
+`;
 const TodoItemLabel = styled.p`
   font-weight: 500;
-  font-size: 25px;
+  font-size: 26px;
   position: relative;
+
   &.done {
     opacity: 0.6;
     &:before {
@@ -98,6 +138,15 @@ const Todo = () => {
   return (
     <Main role="main">
       <Container>
+        <LogoutBtn
+          onClick={() => {
+            localStorage.removeItem("token");
+            navigate("/");
+          }}
+        >
+          Logout
+        </LogoutBtn>
+
         <Header>
           <h1>Todo List</h1>
           <h5>Get things done, one item at a time</h5>
@@ -125,6 +174,13 @@ const Todo = () => {
     </Main>
   );
 };
+const LogoutBtn = styled.button`
+  z-index: 9999;
+  margin-left: auto;
+  border: 0px;
+  background: #775555;
+  padding: 0.1rem;
+`;
 
 const TodoList = styled.div`
   display: flex;
