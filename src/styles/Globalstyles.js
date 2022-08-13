@@ -28,7 +28,11 @@ ${reset}
         outline: none;
         padding-left: 10px;
         }
-
+  @keyframes strikeitem {
+    to {
+      width: calc(100% + 1rem);
+    }
+  }
           
 `;
 
